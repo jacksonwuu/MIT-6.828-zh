@@ -1,3 +1,4 @@
+> 原文链接：https://pdos.csail.mit.edu/6.828/2018/labs/lab5/
 # Lab 5: File system, Spawn and Shell
 
 在这个实验中，你将要实现 spawn，一个用来加载并运行磁盘可执行文件的库程序。然后你将会充实你的内核和库以达到可以在 console 里允许 shell 的程度。这些特性需要一个文件系统，本实验会介绍一个简单的读/写文件系统。
