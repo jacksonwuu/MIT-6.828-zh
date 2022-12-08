@@ -35,7 +35,7 @@ MIT 6.828 是世界上最好的操作系统课程，里面有大量优质的学�
 - [Homework 11: xv6 log](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-new-log.html)
 - [Homework 12: mmap](https://pdos.csail.mit.edu/6.828/2018/homework/mmap.html)
 
-### Homework for submiting question
+### Homework for submitting question
 
 - [Homework 13: exokernel question](https://pdos.csail.mit.edu/6.828/2018/homework/exok.html)
 - [Homework 14: Biscuit question](https://pdos.csail.mit.edu/6.828/2018/homework/biscuit.html)
