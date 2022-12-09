@@ -1,4 +1,4 @@
-原文链接：https://pdos.csail.mit.edu/6.828/2018/labs/lab1/
+> 原文链接：https://pdos.csail.mit.edu/6.828/2018/labs/lab1/
 
 # Lab 1: Booting a PC
 
