@@ -12,30 +12,32 @@ MIT 6.828 是世界上最好的操作系统课程，里面有大量优质的学�
 
 ### Lab/实验
 
-| 原文                                                                                    | 翻译                                                                       | 进度 |
-| :-------------------------------------------------------------------------------------- | :------------------------------------------------------------------------- | :--- |
-| [Lab 1: Booting a PC](https://pdos.csail.mit.edu/6.828/2018/labs/lab1/)                 | [链接](./blob/main/Lab%201%3A%20Booting%20a%20PC.md)                       | WIP  |
-| [Lab 2: Memory Management](https://pdos.csail.mit.edu/6.828/2018/labs/lab2/)            | [链接](./blob/main/Lab%202%3A%20Memory%20Management.md)                    | WIP  |
-| [Lab 3: User Environments](https://pdos.csail.mit.edu/6.828/2018/labs/lab3/)            | [链接](./blob/main/Lab%203%3A%20User%20Environments.md)                    | WIP  |
-| [Lab 4: Preemptive Multitasking](https://pdos.csail.mit.edu/6.828/2018/labs/lab4/)      | [链接](./blob/main/Lab%204%3A%20Preemptive%20Multitasking.md)              | WIP  |
-| [Lab 5: File system, Spawn and Shell](https://pdos.csail.mit.edu/6.828/2018/labs/lab5/) | [链接](./blob/main/Lab%205%3A%20File%20system%2C%20Spawn%20and%20Shell.md) | WIP  |
-| [Lab 6: Network Driver](https://pdos.csail.mit.edu/6.828/2018/labs/lab6/)               | [链接](./blob/main/Lab%206%3A%20Network%20Driver.md)                       | WIP  |
-| [Lab 7: Final JOS project](https://pdos.csail.mit.edu/6.828/2018/labs/lab7/)            | [链接](./blob/main/Lab%207%3A%20Final%20JOS%20project.md)                  | WIP  |
+| 原文                                                                                    | 翻译                                                                                         | 进度 |
+| :-------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- | :--- |
+| [Lab 1: Booting a PC](https://pdos.csail.mit.edu/6.828/2018/labs/lab1/)                 | [实验 1：启动 PC](./Lab%201%3A%20Booting%20a%20PC.md)                                        | WIP  |
+| [Lab 2: Memory Management](https://pdos.csail.mit.edu/6.828/2018/labs/lab2/)            | [实验 2：内存管理](./Lab%202%3A%20Memory%20Management.md)                                    | WIP  |
+| [Lab 3: User Environments](https://pdos.csail.mit.edu/6.828/2018/labs/lab3/)            | [实验 3：用户环境（用户进程）](./Lab%203%3A%20User%20Environments.md)                        | WIP  |
+| [Lab 4: Preemptive Multitasking](https://pdos.csail.mit.edu/6.828/2018/labs/lab4/)      | [实验 4：抢占式多任务](./Lab%204%3A%20Preemptive%20Multitasking.md)                          | WIP  |
+| [Lab 5: File system, Spawn and Shell](https://pdos.csail.mit.edu/6.828/2018/labs/lab5/) | [实验 5：文件系统、Spawn 和 Shell](./Lab%205%3A%20File%20system%2C%20Spawn%20and%20Shell.md) | WIP  |
+| [Lab 6: Network Driver](https://pdos.csail.mit.edu/6.828/2018/labs/lab6/)               | [实验 6：网络驱动](./Lab%206%3A%20Network%20Driver.md)                                       | WIP  |
+| [Lab 7: Final JOS project](https://pdos.csail.mit.edu/6.828/2018/labs/lab7/)            | [实验 7：最终 JOS 项目](./Lab%207%3A%20Final%20JOS%20project.md)                             | WIP  |
 
 ### Homework/作业
 
--   [Homework 1: Boot xv6](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-boot.html)
--   [Homework 2: shell](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-shell.html)
--   [Homework 3: xv6 system calls](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-syscall.html)
--   [Homework 4: lazy page allocation]()
--   [Homework 5: xv6 CPU alarm](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-alarm.html)
--   [Homework 6: multithreaded programming](https://pdos.csail.mit.edu/6.828/2018/homework/lock.html)
--   [Homework 7: xv6 locking](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-lock.html)
--   [Homework 8: User-level threads](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-uthread.html)
--   [Homework 9: barrier](https://pdos.csail.mit.edu/6.828/2018/homework/barrier.html)
--   [Homework 10: big files](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-big-files.html)
--   [Homework 11: xv6 log](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-new-log.html)
--   [Homework 12: mmap](https://pdos.csail.mit.edu/6.828/2018/homework/mmap.html)
+| 原文                                                                                                  | 翻译 | 进度 |
+| :---------------------------------------------------------------------------------------------------- | :--- | :--- |
+| [Homework 1: Boot xv6](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-boot.html)                  |      | TBD  |
+| [Homework 2: shell](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-shell.html)                    |      | TBD  |
+| [Homework 3: xv6 system calls](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-syscall.html)       |      | TBD  |
+| [Homework 4: lazy page allocation](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-zero-fill.html) |      | TBD  |
+| [Homework 5: xv6 CPU alarm](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-alarm.html)            |      | TBD  |
+| [Homework 6: multithreaded programming](https://pdos.csail.mit.edu/6.828/2018/homework/lock.html)     |      | TBD  |
+| [Homework 7: xv6 locking](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-lock.html)               |      | TBD  |
+| [Homework 8: User-level threads](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-uthread.html)     |      | TBD  |
+| [Homework 9: barrier](https://pdos.csail.mit.edu/6.828/2018/homework/barrier.html)                    |      | TBD  |
+| [Homework 10: big files](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-big-files.html)           |      | TBD  |
+| [Homework 11: xv6 log](https://pdos.csail.mit.edu/6.828/2018/homework/xv6-new-log.html)               |      | TBD  |
+| [Homework 12: mmap](https://pdos.csail.mit.edu/6.828/2018/homework/mmap.html)                         |      | TBD  |
 
 ### Homework for submitting question
 
