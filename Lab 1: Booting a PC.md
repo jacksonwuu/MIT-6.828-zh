@@ -1,24 +1,90 @@
 > 原文链接：https://pdos.csail.mit.edu/6.828/2018/labs/lab1/
 
-# Lab 1: Booting a PC
+# 实验 1：启动 PC（Booting a PC）
 
 ## 介绍
 
-这个实验室分成三个部分。第一部分主要介绍如何熟悉 x86 汇编语言、QEMU x86 仿真器和 PC 的开机引导程序。第二部分检查 6.828 内核的引导加载程序，它位于实验 boot 目录中。最后，第三部分研究了 6.828 内核本身的初始模板，名为 JOS，它位于 kernel 目录中。
+这个实验室分成三个部分。第一部分主要是熟悉 x86 汇编语言、QEMU x86 模拟器和 PC 的开机引导程序。第二部分检查 6.828 内核的引导加载程序，它位于实验 `boot` 目录中。最后的第三部分研究了 6.828 内核本身的初始模板，名为 `JOS`，它位于 `kernel` 目录中。
+
+### Software Setup
+
+The files you will need for this and subsequent lab assignments in this course are distributed using the Git version control system. To learn more about Git, take a look at the Git user's manual, or, if you are already familiar with other version control systems, you may find this CS-oriented overview of Git useful.
+
+The URL for the course Git repository is https://pdos.csail.mit.edu/6.828/2018/jos.git. To install the files in your Athena account, you need to clone the course repository, by running the commands below. You must use an x86 Athena machine; that is, uname -a should mention i386 GNU/Linux or i686 GNU/Linux or x86_64 GNU/Linux. You can log into a public Athena host with ssh -X athena.dialup.mit.edu.
+
+```shell
+athena% mkdir ~/6.828
+athena% cd ~/6.828
+athena% add git
+athena% git clone https://pdos.csail.mit.edu/6.828/2018/jos.git lab
+Cloning into lab...
+athena% cd lab
+athena%
+```
+
+Git allows you to keep track of the changes you make to the code. For example, if you are finished with one of the exercises, and want to checkpoint your progress, you can commit your changes by running:
+
+```shell
+athena% git commit -am 'my solution for lab1 exercise 9'
+Created commit 60d2135: my solution for lab1 exercise 9
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+athena%
+```
+
+You can keep track of your changes by using the git diff command. Running git diff will display the changes to your code since your last commit, and git diff origin/lab1 will display the changes relative to the initial code supplied for this lab. Here, origin/lab1 is the name of the git branch with the initial code you downloaded from our server for this assignment.
+
+We have set up the appropriate compilers and simulators for you on Athena. To use them, run add -f 6.828. You must run this command every time you log in (or add it to your ~/.environment file). If you get obscure errors while compiling or running qemu, double check that you added the course locker.
+
+If you are working on a non-Athena machine, you'll need to install qemu and possibly gcc following the directions on the tools page. We've made several useful debugging changes to qemu and some of the later labs depend on these patches, so you must build your own. If your machine uses a native ELF toolchain (such as Linux and most BSD's, but notably not OS X), you can simply install gcc from your package manager. Otherwise, follow the directions on the tools page.
+
+### Hand-In Procedure
+
+You will turn in your assignments using the submission website. You need to request an API key from the submission website before you can turn in any assignments or labs.
+
+The lab code comes with GNU Make rules to make submission easier. After committing your final changes to the lab, type make handin to submit your lab.
+
+```shell
+athena% git commit -am "ready to submit my lab"
+[lab1 c2e3c8b] ready to submit my lab
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+athena% make handin
+git archive --prefix=lab1/ --format=tar HEAD | gzip > lab1-handin.tar.gz
+Get an API key for yourself by visiting https://6828.scripts.mit.edu/2018/handin.py/
+Please enter your API key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 50199  100   241  100 49958    414  85824 --:--:-- --:--:-- --:--:-- 85986
+athena%
+```
+
+make handin will store your API key in myapi.key. If you need to change your API key, just remove this file and let make handin generate it again (myapi.key must not include newline characters).
+If use make handin and you have either uncomitted changes or untracked files, you will see output similar to the following:
+
+M hello.c
+?? bar.c
+?? foo.pyc
+Untracked files will not be handed in. Continue? [y/N]
+Inspect the above lines and make sure all files that your lab solution needs are tracked i.e. not listed in a line that begins with ??.
+In the case that make handin does not work properly, try fixing the problem with the curl or Git commands. Or you can run make tarball. This will make a tar file for you, which you can then upload via our web interface.
+
+You can run make grade to test your solutions with the grading program. The web interface uses the same grading program to assign your lab submission a grade. You should check the output of the grader (it may take a few minutes since the grader runs periodically) and ensure that you received the grade which you expected. If the grades don't match, your lab submission probably has a bug -- check the output of the grader (resp-lab\*.txt) to see which particular test failed.
+
+For Lab 1, you do not need to turn in answers to any of the questions below. (Do answer them for yourself though! They will help with the rest of the lab.)
 
 ## Part 1: PC Bootstrap
 
-第一个练习的目的是向你介绍 x86 汇编语言和 PC 引导过程，并让你开始 QEMU 和 QEMU/GDB 调试。你不需要为实验室的这一部分编写任何代码，但你应该根据自己的理解仔细阅读它，并准备好回答下面提出的问题。
+第一个练习的目的是向你介绍 x86 汇编语言和 PC 引导过程，并让你开始用 QEMU 和 QEMU/GDB 进行调试。你不需要为实验室的这一部分编写任何代码，但你应该在自己的理解范围内仔细阅读它，并准备好回答下面提出的问题。
 
 ### 从 x86 汇编开始
 
-如果你没有太熟悉 x86 汇编语言，你会在这个课程里很快对它熟悉！[PC Assembly Language Book](https://pdos.csail.mit.edu/6.828/2018/readings/pcasm-book.pdf)是个绝佳的开始点。这个书包含了新旧材料。
+如果你不太熟悉 x86 汇编语言，你会在这个课程里很快对它熟悉起来！[PC Assembly Language Book](https://pdos.csail.mit.edu/6.828/2018/readings/pcasm-book.pdf)是个绝佳的起点。这个书包含了新老材料。
 
 警告：非常不幸的是书里的例子都是用 NASM 汇编器，但是我们会用 GNU 汇编器。NASM 使用所谓的 Intel 语法，但是 GNU 使用 AT&T 语法。然而语法上都是等价的，用不同语法写的汇编从表面上看会非常不一样。幸运的是这两种语法非常简单，这本书有讲到：[Brennan's Guide to Inline Assembly](http://www.delorie.com/djgpp/doc/brennan/brennan_att_inline_djgpp.html)。
 
-练习 1：熟悉[the 6.828 reference page](https://pdos.csail.mit.edu/6.828/2018/reference.html)里的汇编语言材料。你现在不需要都读，但是在读写 x86 汇编程序集时，你几乎肯定会想要参考其中一些资料。
-
-我们确实推荐阅读[Brennan's Guide to Inline Assembly](http://www.delorie.com/djgpp/doc/brennan/brennan_att_inline_djgpp.html)的"The Syntax"部分。它很好地描述了 AT&T 汇编语法，我们会在 JOS 里用到的。
+> 练习 1：熟悉[the 6.828 reference page](https://pdos.csail.mit.edu/6.828/2018/reference.html)里的汇编语言材料。你现在不需要都读，但是在读写 x86 汇编程序集时，你几乎肯定会想要参考其中一些资料。
+>
+> 我们确实推荐阅读[Brennan's Guide to Inline Assembly](http://www.delorie.com/djgpp/doc/brennan/brennan_att_inline_djgpp.html)的"The Syntax"部分。它很好地描述了 AT&T 汇编语法，我们会在 JOS 里用到的。
 
 当然，x86 汇编语言编程的权威参考是 Intel 的指令集架构参考，你可以在[the 6.828 reference page](https://pdos.csail.mit.edu/6.828/2018/reference.html)中找到两种风格：旧的[80386 Programmer's Reference Manual](https://pdos.csail.mit.edu/6.828/2018/readings/i386/toc.htm)的 HTML 版本，比最近的手册更短，更容易浏览，但描述了我们将在 6.828 中使用的所有 x86 处理器特性；和完整的、最新的和最好的[IA-32 Intel Architecture Software Developer's Manuals](http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html)从英特尔，涵盖所有最新的处理器的特点，我们不需要在课堂上使用，但你可能会对感兴趣学习。同样的(通常更友好的)一套手册[available from AMD](http://developer.amd.com/resources/developer-guides-manuals/)。将 Intel/AMD 架构手册保存起来，以备以后使用，或者当你想要查找特定处理器特性或指令的明确解释时，将其作为参考。
 
@@ -30,7 +96,7 @@
 
 首先，将 Lab 1 文件解压缩到 Athena 上你自己的目录中，如“软件安装”中所述，然后在 Lab 目录中输入 make(或 BSD 系统上的 gmake)，以构建最小的 6.828 引导加载程序和内核。(把我们在这里运行的代码称为“内核”有点慷慨，但我们将在整个学期充实它。)
 
-```
+```shell
 athena% cd lab
 athena% make
 + as kern/entry.S
@@ -55,15 +121,16 @@ boot block is 380 bytes (max 510)
 
 现在你已经准备好运行 QEMU，并提供文件 obj/kern/kernel.img，创建在上面，作为模拟 PC 的“虚拟硬盘”的内容。这个硬盘映像包含我们的引导加载程序(obj/boot/boot)和我们的内核(obj/kernel)。
 
-```
+```shell
 athena% make qemu
-or
+```
+或者
+```shell
 athena% make qemu-nox
 ```
+将执行 QEMU，其中包含设置硬盘和直接串口输出到终端所需的选项。执行后，这些文本应该出现在 QEMU 窗口里：
 
-这将执行 QEMU，其中包含设置硬盘和直接串口输出到终端所需的选项。一些文本应该出现在 QEMU 窗口：
-
-```
+```shell
 Booting from Hard Disk...
 6828 decimal is XXX octal!
 entering test_backtrace 5
@@ -87,7 +154,7 @@ K>
 
 内核监视器只有两个命令可以用，help 和 kerninfo。
 
-```
+```shell
 K> help
 help - display this list of commands
 kerninfo - display information about the kernel
@@ -101,14 +168,13 @@ Kernel executable memory footprint: 75KB
 K>
 ```
 
-help 命令很明显，我们将很快讨论 kerninfo 命令输出的含义。虽然很简单，但需要注意的是，这个内核监控器“直接”运行在模拟 PC 的“原始(虚拟)硬件”上。这意味着你应该能够复制 obj/kern/kernel 的内容。将硬盘插入真正的 PC，打开它，并在 PC 的真实屏幕上看到与你在上面的 QEMU 窗口中所做的完全相同的事情。(但是，我们不建议你在硬盘上有有用信息的真正机器上这样做，因为复制 kernel.img 添加到其硬盘的开始部分将回收主引导记录和第一个分区的开始部分，从而有效地导致硬盘上之前的所有内容丢失！)
+help 命令很明显，我们将很快讨论 kerninfo 命令输出的含义。虽然很简单，但需要注意的是，这个内核监控器“直接”运行在模拟 PC 的“原始(虚拟)硬件”上。这意味着你应该能够复制 `obj/kern/kernel` 的内容。将硬盘插入真正的 PC，打开它，并在 PC 的真实屏幕上看到与你在上面的 QEMU 窗口中所做的完全相同的事情。(但是，我们不建议你在硬盘上有有用信息的真正机器上这样做，因为复制 kernel.img 添加到其硬盘的开始部分将回收主引导记录和第一个分区的开始部分，从而有效地导致硬盘上之前的所有内容丢失！)
 
 ### PC 的物理地址空间
 
 现在我们将更详细地介绍一下 PC 是如何启动的。PC 机的物理地址空间是硬连接的，有以下总体布局：
 
 ```
-
 +------------------+  <- 0xFFFFFFFF (4GB)
 |      32-bit      |
 |  memory mapped   |
@@ -154,7 +220,7 @@ help 命令很明显，我们将很快讨论 kerninfo 命令输出的含义。�
 
 打开两个终端窗口并将两个 shell cd 到你的实验室目录中。其中，输入 make qemu-gdb(或 make qemu-nox-gdb)。这将启动 QEMU，但是 QEMU 在处理器执行第一个指令之前停止，并等待来自 GDB 的调试连接。在第二个终端中，在运行 make 的同一个目录运行 make gdb。你应该看到这样的东西，
 
-```
+```shell
 athena% make gdb
 GNU gdb (GDB) 6.8-debian
 Copyright (C) 2008 Free Software Foundation, Inc.
@@ -175,7 +241,7 @@ The target architecture is assumed to be i8086
 
 以下行:
 
-```
+```shell
 [f000:fff0] 0xffff0:	ljmp   $0xf000,$0xe05b
 ```
 
@@ -189,7 +255,7 @@ QEMU 为什么会这样开始呢？英特尔就是这样设计 8088 处理器的
 
 为了回答这个问题，我们需要了解一些关于实际模式寻址的知识。在实模式下(PC 启动的模式)，地址转换按如下公式进行：物理地址= 16\*段+偏移量。因此，当 PC 将 CS 设置为 0xf000, IP 设置为 0xfff0 时，所引用的物理地址为:
 
-```
+```shell
    16 * 0xf000 + 0xfff0   # in hex multiplication by 16 is
    = 0xf0000 + 0xfff0     # easy--just append a 0.
    = 0xffff0
@@ -261,7 +327,7 @@ ELF 二进制由一段固定长度的 ELF 头开始，后面是一个可变长�
 
 检查内核可执行文件的名字、大小和链接地址列表，可以输入：
 
-```
+```shell
 athena% objdump -h obj/kern/kernel
 ```
 
@@ -275,13 +341,13 @@ athena% objdump -h obj/kern/kernel
 
 通常，链接和加载地址是相同的。例如，查看 boot loader 的.text 部分:
 
-```
+```shell
 athena% objdump -h obj/boot/boot.out
 ```
 
 boot loader 使用 ELF 程序头来决定如何加载这些段。程序头指定将 ELF 对象的哪些部分加载到内存中，以及每个部分应该占用的目标地址。你可以查看程序头，键入：
 
-```
+```shell
 athena% objdump -x obj/kern/kernel
 ```
 
@@ -297,7 +363,7 @@ BIOS 加载 boot 扇区到内存里，在地址 0x7c00 处开始，所以这个�
 
 在段信息之外，ELF 头里还有另外一个字段对我们很重要，叫做 e_entry。这个字段持有程序入口的链接地址：在 text 段中程序应该执行的内存地址。你可以看到入口点：
 
-```
+```shell
 athena% objdump -f obj/kern/kernel
 ```
 
@@ -339,7 +405,7 @@ athena% objdump -f obj/kern/kernel
 
 1. 解释 printf.c 和 console.c 接口的区别。具体来说，console.c 导出什么函数？什么函数被用在 printf.c 里？
 2. 解释 console.c 如下代码：
-    ```
+    ```c
     1      if (crt_pos >= CRT_SIZE) {
     2              int i;
     3              memmove(crt_buf, crt_buf + CRT_COLS, (CRT_SIZE - CRT_COLS) * sizeof(uint16_t));
@@ -351,7 +417,7 @@ athena% objdump -f obj/kern/kernel
 3. 对于下列问题，你可能想要 Lecture 2 的笔记。这些笔记包含了 x86 上 GCC 的的调用约定。
    一步一步地追踪如下代码的执行：
 
-    ```
+    ```c
     int x = 1, y = 3, z = 4;
     cprintf("x %d, y %x, z %d\n", x, y, z);
     ```
@@ -361,7 +427,7 @@ athena% objdump -f obj/kern/kernel
 
 4. 运行如下代码。
 
-    ```
+    ```c
     unsigned int i = 0x00646c72;
     cprintf("H%x Wo%s", 57616, &i);
     ```
@@ -374,7 +440,7 @@ athena% objdump -f obj/kern/kernel
 
 5. 在如下代码里，'y='之后会打印什么?（注意：答案不是一个特定的值）这个是怎么发生的？
 
-    ```
+    ```c
     cprintf("x=%d y=%d", 3);
     ```
 
@@ -400,7 +466,7 @@ ebp（基值指针）寄存器，相反，主要是通过软件约定来和栈�
 
 backtrace 函数应该以以下格式显示函数调用帧的列表:
 
-```
+```shell
 Stack backtrace:
   ebp f0109e58  eip f0100a62  args 00000001 f0109e80 f0109e98 f0100ed2 00000031
   ebp f0109ed8  eip f01000d6  args 00000000 00000000 f0100058 f0109f28 00000061
@@ -441,7 +507,7 @@ In debuginfo*eip, where do \_\_STAB*\* come from? This question has a long answe
 
 在内核监视器中添加一个 backtrace 命令，并扩展 mon_backtrace 的实现，调用 debuginfo_eip 并为表单的每个堆栈帧打印一行：
 
-```
+```shell
 K> backtrace
 Stack backtrace:
   ebp f010ff78  eip f01008ae  args 00000001 f010ff8c 00000000 f0110580 00000000
